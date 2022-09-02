@@ -26,19 +26,19 @@ public class Player {
      */
     private AudioDevice device;
 
-    private PlayerWindow window;
+    private PlayerWindow swindow;
 
     private int currentFrame = 0;
 
-    private final ActionListener buttonListenerPlayNow = e -> ;
-    private final ActionListener buttonListenerRemove = e -> ;
-    private final ActionListener buttonListenerAddSong = e -> ;
-    private final ActionListener buttonListenerPlayPause = e -> ;
-    private final ActionListener buttonListenerStop = e -> ;
-    private final ActionListener buttonListenerNext = e -> ;
-    private final ActionListener buttonListenerPrevious = e -> ;
-    private final ActionListener buttonListenerShuffle = e -> ;
-    private final ActionListener buttonListenerLoop = e -> ;
+    private final ActionListener buttonListenerPlayNow = e -> { };
+    private final ActionListener buttonListenerRemove = e -> { };
+    private final ActionListener buttonListenerAddSong = e -> { };
+    private final ActionListener buttonListenerPlayPause = e -> { };
+    private final ActionListener buttonListenerStop = e ->{ };
+    private final ActionListener buttonListenerNext = e ->{ };
+    private final ActionListener buttonListenerPrevious = e ->{ };
+    private final ActionListener buttonListenerShuffle = e -> { };
+    private final ActionListener buttonListenerLoop = e -> { };
     private final MouseInputAdapter scrubberMouseInputAdapter = new MouseInputAdapter() {
         @Override
         public void mouseReleased(MouseEvent e) {
