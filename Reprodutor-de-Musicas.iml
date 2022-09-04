@@ -8,11 +8,11 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="formdev.flatlaf" level="project" />
-    <orderEntry type="library" name="jetbrains.annotations" level="project" />
-    <orderEntry type="library" name="mpatric.mp3agic" level="project" />
-    <orderEntry type="library" name="javazoom.jlayer" level="project" />
-    <orderEntry type="module-library">
+    <orderEntry type="library" exported="" name="formdev.flatlaf" level="project" />
+    <orderEntry type="library" exported="" name="jetbrains.annotations" level="project" />
+    <orderEntry type="library" exported="" name="mpatric.mp3agic" level="project" />
+    <orderEntry type="library" exported="" name="javazoom.jlayer" level="project" />
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/bibliotecas java/jlayer-1.0.1.jar!/" />
@@ -21,7 +21,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/bibliotecas java/flatlaf-2.4.jar!/" />
@@ -30,7 +30,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/bibliotecas java/flatlaf-swingx-2.4.jar!/" />
@@ -39,10 +39,46 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/bibliotecas java/mp3agic-0.9.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/flatlaf-2.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/flatlaf-swingx-2.4.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/jlayer-1.0.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/mp3agic-0.9.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
