@@ -10,6 +10,7 @@ import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Player {
@@ -34,7 +35,17 @@ public class Player {
     private final ActionListener buttonListenerPlayNow = e -> { };
     private final ActionListener buttonListenerRemove = e -> { };
     private final ActionListener buttonListenerAddSong = e -> {
-        addSong();
+        try {
+            adicionarSong();
+        } catch (InvalidDataException ex) {
+            throw new RuntimeException(ex);
+        } catch (UnsupportedTagException ex) {
+            throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        } catch (BitstreamException ex) {
+            throw new RuntimeException(ex);
+        }
     };
     private final ActionListener buttonListenerPlayPause = e -> { };
     private final ActionListener buttonListenerStop = e ->{ };
@@ -144,12 +155,8 @@ public class Player {
     }
 
     //Função responsável por adicionar uma música
-    private void addSong() {
-        
-        int id = this.identificador + 1;
-        this.identificador = id;
-        GetSong getSong = new GetSong();
-
+    private void adicionarSong() throws InvalidDataException, UnsupportedTagException, IOException, BitstreamException {
+        this.window.openFileChooser();
     }
     //</editor-fold>
 }
