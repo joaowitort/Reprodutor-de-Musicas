@@ -10,6 +10,7 @@ import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 public class Player {
 
@@ -32,7 +33,9 @@ public class Player {
 
     private final ActionListener buttonListenerPlayNow = e -> { };
     private final ActionListener buttonListenerRemove = e -> { };
-    private final ActionListener buttonListenerAddSong = e -> { };
+    private final ActionListener buttonListenerAddSong = e -> {
+        addSong();
+    };
     private final ActionListener buttonListenerPlayPause = e -> { };
     private final ActionListener buttonListenerStop = e ->{ };
     private final ActionListener buttonListenerNext = e ->{ };
@@ -53,9 +56,22 @@ public class Player {
         }
     };
 
+    // lista para armazenar músicas
+    ArrayList<String[]> queueList;
+    // identificador para o array
+    int identificador;
+    //janela
+    PlayerWindow window;
     public Player() {
-        EventQueue.invokeLater(() -> window = new PlayerWindow(
-                TITULO_DA_JANELA,
+        // inicializando o array
+        this.queueList = new ArrayList<>();
+        // inicializando o contador
+        identificador = 0;
+        //só pra conseguir rodar
+        String[][] LISTA_DE_REPRODUÇÃO = new String[2][2];
+
+        EventQueue.invokeLater(() -> this.window = new PlayerWindow(
+                "CinMusic",
                 LISTA_DE_REPRODUÇÃO,
                 buttonListenerPlayNow,
                 buttonListenerRemove,
@@ -113,6 +129,27 @@ public class Player {
             boolean condition = true;
             while (framesToSkip-- > 0 && condition) condition = skipNextFrame();
         }
+    }
+
+    public class GetSong{
+        Song addSongWindow;
+
+        public GetSong(){
+            this.addSongWindow = null;
+        }
+
+        public void setWindow(Song addSongWindow){
+            this.addSongWindow = addSongWindow;
+        }
+    }
+
+    //Função responsável por adicionar uma música
+    private void addSong() {
+        
+        int id = this.identificador + 1;
+        this.identificador = id;
+        GetSong getSong = new GetSong();
+
     }
     //</editor-fold>
 }

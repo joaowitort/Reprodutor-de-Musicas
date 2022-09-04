@@ -124,6 +124,10 @@ public class Song {
         return msPerFrame;
     }
 
+    // fazer método que retorna um Song
+    public void getSong(){
+    }
+
     public BufferedInputStream getBufferedInputStream() throws FileNotFoundException {
         return new BufferedInputStream(new FileInputStream(this.getFilePath()));
     }
