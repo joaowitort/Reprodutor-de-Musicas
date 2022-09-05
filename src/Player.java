@@ -2,7 +2,6 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jl.decoder.*;
 import javazoom.jl.player.AudioDevice;
-import javazoom.jl.player.FactoryRegistry;
 import support.PlayerWindow;
 import support.Song;
 
@@ -11,7 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Player {
 
@@ -28,43 +26,14 @@ public class Player {
      */
     private AudioDevice device;
 
-    private PlayerWindow swindow;
+    private PlayerWindow window;
 
     private int currentFrame = 0;
 
     private final ActionListener buttonListenerPlayNow = e -> {
 
-
-        new Thread ( ( ) -> {
-
-            if (button == swindow.BUTTON_ICON_PLAY){
-
-                System.out.println("reproduzir a música");
-                this.device = FactoryRegistry.systemRegistry().createAudioDevice();
-                this.device.open(this.decoder = new Decoder());
-                this.bitstream = new Bitstream(currentSong.getBufferedInputStream());
-
-
-        }).start(playNextFrame);
-
-
-
-
-
-
-
-
     };
     private final ActionListener buttonListenerRemove = e ->  {
-
-
-
-
-
-
-
-
-
     };
     private final ActionListener buttonListenerAddSong = e -> {
         try {
@@ -80,36 +49,6 @@ public class Player {
         }
     };
     private final ActionListener buttonListenerPlayPause = e -> {
-
-        new Thread ( ( ) -> {
-
-            if (button == swindow.BUTTON_ICON_PLAY) {
-
-                System.out.println("play song");
-                this.device = FactoryRegistry.systemRegistry().createAudioDevice();
-                this.device.open(this.decoder = new Decoder());
-                this.bitstream = new Bitstream(currentSong.getBufferedInputStream());
-
-
-            }else if(button == swindow.BUTTON_ICON_PAUSE){
-                System.out.println("pause song");
-                bitstream.close();
-                device.close();
-
-            }
-
-            }).start();
-
-
-        };
-
-
-
-
-
-
-
-
     };
     private final ActionListener buttonListenerStop = e ->{ };
     private final ActionListener buttonListenerNext = e ->{ };
@@ -130,20 +69,12 @@ public class Player {
         }
     };
 
-    // lista para armazenar músicas
-    ArrayList<String[]> queueList;
-    // identificador para o array
-    int identificador;
+    private ArmazemSong armSong;
     //janela
-    PlayerWindow window;
     public Player() {
-        // inicializando o array
-        this.queueList = new ArrayList<>();
-        // inicializando o contador
-        identificador = 0;
         //só pra conseguir rodar
-        String[][] LISTA_DE_REPRODUÇÃO = new String[2][2];
-
+        String[][] LISTA_DE_REPRODUÇÃO = new String[3][5];
+        this.armSong = new ArmazemSong();
         EventQueue.invokeLater(() -> this.window = new PlayerWindow(
                 "CinMusic",
                 LISTA_DE_REPRODUÇÃO,
@@ -205,21 +136,11 @@ public class Player {
         }
     }
 
-    public class GetSong{
-        Song addSongWindow;
-
-        public GetSong(){
-            this.addSongWindow = null;
-        }
-
-        public void setWindow(Song addSongWindow){
-            this.addSongWindow = addSongWindow;
-        }
-    }
-
     //Função responsável por adicionar uma música
     private void adicionarSong() throws InvalidDataException, UnsupportedTagException, IOException, BitstreamException {
-        this.window.openFileChooser();
+        Song a = this.window.openFileChooser();
+        this.armSong.addSongList(a);
+        this.window.setQueueList(this.armSong.setListaReproducao());
     }
     //</editor-fold>
 }
