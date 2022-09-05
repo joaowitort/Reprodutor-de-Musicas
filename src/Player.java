@@ -34,6 +34,7 @@ public class Player {
 
     };
     private final ActionListener buttonListenerRemove = e ->  {
+        removerSong();
     };
     private final ActionListener buttonListenerAddSong = e -> {
         try {
@@ -137,6 +138,12 @@ public class Player {
     private void adicionarSong() throws InvalidDataException, UnsupportedTagException, IOException, BitstreamException {
         Song a = this.window.openFileChooser();
         this.armSong.addSongList(a);
+        this.window.setQueueList(this.armSong.setListaReproducao());
+    }
+
+    private void removerSong(){
+        String id = this.window.getSelectedSong();
+        this.armSong.removeSongList(id);
         this.window.setQueueList(this.armSong.setListaReproducao());
     }
     //</editor-fold>
