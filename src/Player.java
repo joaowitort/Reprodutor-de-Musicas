@@ -70,14 +70,11 @@ public class Player {
     };
 
     private ArmazemSong armSong;
-    //janela
     public Player() {
-        //só pra conseguir rodar
-        String[][] LISTA_DE_REPRODUÇÃO = new String[3][5];
         this.armSong = new ArmazemSong();
         EventQueue.invokeLater(() -> this.window = new PlayerWindow(
                 "CinMusic",
-                LISTA_DE_REPRODUÇÃO,
+                this.armSong.setListaReproducao(),
                 buttonListenerPlayNow,
                 buttonListenerRemove,
                 buttonListenerAddSong,
