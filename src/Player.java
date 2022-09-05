@@ -32,8 +32,40 @@ public class Player {
 
     private int currentFrame = 0;
 
-    private final ActionListener buttonListenerPlayNow = e -> { };
-    private final ActionListener buttonListenerRemove = e -> { };
+    private final ActionListener buttonListenerPlayNow = e -> {
+
+
+        new Thread ( ( ) -> {
+
+            if (button == swindow.BUTTON_ICON_PLAY){
+
+                System.out.println("reproduzir a música");
+                this.device = FactoryRegistry.systemRegistry().createAudioDevice();
+                this.device.open(this.decoder = new Decoder());
+                this.bitstream = new Bitstream(currentSong.getBufferedInputStream());
+
+
+        }).start(playNextFrame);
+
+
+
+
+
+
+
+
+    };
+    private final ActionListener buttonListenerRemove = e ->  {
+
+
+
+
+
+
+
+
+
+    };
     private final ActionListener buttonListenerAddSong = e -> {
         try {
             adicionarSong();
@@ -47,7 +79,38 @@ public class Player {
             throw new RuntimeException(ex);
         }
     };
-    private final ActionListener buttonListenerPlayPause = e -> { };
+    private final ActionListener buttonListenerPlayPause = e -> {
+
+        new Thread ( ( ) -> {
+
+            if (button == swindow.BUTTON_ICON_PLAY) {
+
+                System.out.println("play song");
+                this.device = FactoryRegistry.systemRegistry().createAudioDevice();
+                this.device.open(this.decoder = new Decoder());
+                this.bitstream = new Bitstream(currentSong.getBufferedInputStream());
+
+
+            }else if(button == swindow.BUTTON_ICON_PAUSE){
+                System.out.println("pause song");
+                bitstream.close();
+                device.close();
+
+            }
+
+            }).start();
+
+
+        };
+
+
+
+
+
+
+
+
+    };
     private final ActionListener buttonListenerStop = e ->{ };
     private final ActionListener buttonListenerNext = e ->{ };
     private final ActionListener buttonListenerPrevious = e ->{ };
