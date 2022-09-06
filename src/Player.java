@@ -84,13 +84,13 @@ public class Player {
         }
     };
 
-    private ArmazemSong armSong;
+    private StockSong armSong;
 
     public Player() {
-        this.armSong = new ArmazemSong();
+        this.armSong = new StockSong();
         EventQueue.invokeLater(() -> this.window = new PlayerWindow(
                 "CinMusic",
-                this.armSong.getListaReproducao(),
+                this.armSong.getPlaylist(),
                 buttonListenerPlayNow,
                 buttonListenerRemove,
                 buttonListenerAddSong,
@@ -153,13 +153,13 @@ public class Player {
     private void adicionarSong() throws InvalidDataException, UnsupportedTagException, IOException, BitstreamException {
         Song a = this.window.openFileChooser();
         this.armSong.addSongList(a);
-        this.window.setQueueList(this.armSong.getListaReproducao());
+        this.window.setQueueList(this.armSong.getPlaylist());
     }
 
     private void removerSong() {
         String id = this.window.getSelectedSong();
         this.armSong.removeSongList(id);
-        this.window.setQueueList(this.armSong.getListaReproducao());
+        this.window.setQueueList(this.armSong.getPlaylist());
     }
 
     private void playNow() throws JavaLayerException, FileNotFoundException {
