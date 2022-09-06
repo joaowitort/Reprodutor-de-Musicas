@@ -12,7 +12,7 @@ public class ArmazemSong {
         songList.add(a);
     }
 
-    public String[][] setListaReproducao() {
+    public String[][] getListaReproducao() {
         String[][] listaReproducao = new String[songList.size()][6];
         for (int i = 0; i < songList.size(); i++) {
             listaReproducao[i][0] = songList.get(i).getTitle();
@@ -33,6 +33,11 @@ public class ArmazemSong {
         }
     }
 
+    public Song getSong(String id) {
+        int posicao = buscarPosicao(id);
+        return songList.get(posicao);
+    }
+
     public int buscarPosicao(String id) {
         for (int i = 0; i < songList.size(); i++) {
             if (songList.get(i).getUuid() == id) {
@@ -42,4 +47,7 @@ public class ArmazemSong {
         return -1;
     }
 
+    public ArrayList setSongsArmazenados(){
+        return  songList;
+    }
 }
