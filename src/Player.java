@@ -61,6 +61,24 @@ public class Player {
     private final ActionListener buttonListenerPlayPause = e -> {
     };
     private final ActionListener buttonListenerStop = e -> {
+
+        private volatile Thread blinker;
+
+        public void stop() {
+            blinker = null;
+        }
+
+        public void run() {
+            Thread thisThread = Thread.currentThread();
+            while (blinker == thisThread) {
+                try {
+                    Thread.sleep(Stop);
+                } catch (InterruptedException e){
+                }
+
+            }
+        }
+
     };
     private final ActionListener buttonListenerNext = e -> {
     };
