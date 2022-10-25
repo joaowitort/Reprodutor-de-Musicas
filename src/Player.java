@@ -217,7 +217,7 @@ public class Player {
         };
 
         this.window = new PlayerWindow(
-                "CIN Music", queue, buttonListenerPlayNow, buttonListenerRemove,
+                "CIn Music", queue, buttonListenerPlayNow, buttonListenerRemove,
                 buttonListenerAddSong, buttonListenerShuffle, buttonListenerPrevious,
                 buttonListenerPlayPause, buttonListenerStop, buttonListenerNext,
                 buttonListenerRepeat, scrubberListenerClick, scrubberListenerMotion
@@ -512,7 +512,6 @@ public class Player {
 
         /*
         Checking if the song is the last one and repeat is pressed OR if the song is not the last one.
-
         If none of these are true, it means that the song is the last one and repeat is no pressed, which
         means the player will stop.
         */
@@ -631,4 +630,9 @@ public class Player {
 
 
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Getters and Setters">
+
+    //</editor-fold>
 }
