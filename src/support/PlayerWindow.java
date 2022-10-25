@@ -4,10 +4,10 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.mpatric.mp3agic.*;
 import javazoom.jl.decoder.BitstreamException;
 import support.resources.fonts.roboto_condensed.Roboto;
-import support.resources.icons.Icons24;
+import support.resources.icons.Icons;
 
 import javax.swing.*;
-import javax.swing.event.MouseInputAdapter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AttributeSet;
@@ -16,18 +16,24 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Objects;
-import java.util.UUID;
 
 public class PlayerWindow {
     private final String[] columnTitles = new String[]{"Title", "Album", "Artist", "Year", "Length", "Path"};
-    public final int BUTTON_ICON_PLAY = 0;
-    public final int BUTTON_ICON_PAUSE = 1;
+    private final ImageIcon iconShuffle = new ImageIcon(Objects.requireNonNull(Icons.class.getResource("shuffle-24.png")));
+    private final ImageIcon iconPrevious = new ImageIcon(Objects.requireNonNull(Icons.class.getResource("previous-24.png")));
+    private final ImageIcon iconPlay = new ImageIcon(Objects.requireNonNull(Icons.class.getResource("play-24.png")));
+    private final ImageIcon iconPause = new ImageIcon(Objects.requireNonNull(Icons.class.getResource("pause-24.png")));
+    private final ImageIcon iconStop = new ImageIcon(Objects.requireNonNull(Icons.class.getResource("stop-24.png")));
+    private final ImageIcon iconNext = new ImageIcon(Objects.requireNonNull(Icons.class.getResource("next-24.png")));
+    private final ImageIcon iconRepeat = new ImageIcon(Objects.requireNonNull(Icons.class.getResource("loop-24.png")));
 
     private final JFrame window = new JFrame();
     private final JPanel queuePanel;
@@ -46,21 +52,22 @@ public class PlayerWindow {
     private final JButton miniPlayerPlayPauseButton;
     private final JButton miniPlayerStopButton;
     private final JButton miniPlayerNextButton;
-    private final JToggleButton miniPlayerLoopButton;
+    private final JToggleButton miniPlayerRepeatButton;
 
     /**
-     * @param windowTitle               String to be used as the window title.
-     * @param queueArray                String[][] with the queue. The array should contain in each position one array
-     * @param buttonListenerPlayNow     ActionListener for the "Play Now" button.
-     * @param buttonListenerRemove      ActionListener for the "Remove" button.
-     * @param buttonListenerAddSong     ActionListener for the "Add Song" button.
-     * @param buttonListenerShuffle     ActionListener for the "Shuffle" button.
-     * @param buttonListenerPrevious    ActionListener for the "Previous" button.
-     * @param buttonListenerPlayPause   ActionListener for the "Play/Pause" button.
-     * @param buttonListenerStop        ActionListener for the "Stop" button.
-     * @param buttonListenerNext        ActionListener for the "Next" button.
-     * @param buttonListenerLoop      ActionListener for the "Loop" button.
-     * @param scrubberMouseInputAdapter MouseInputAdapter for the Scrubber.
+     * @param windowTitle             String to be used as the window title.
+     * @param queueArray              String[][] with the queue. The array should contain in each position one array
+     * @param buttonListenerPlayNow   ActionListener for the "Play Now" button.
+     * @param buttonListenerRemove    ActionListener for the "Remove" button.
+     * @param buttonListenerAddSong   ActionListener for the "Add Song" button.
+     * @param buttonListenerShuffle   ActionListener for the "Shuffle" button.
+     * @param buttonListenerPrevious  ActionListener for the "Previous" button.
+     * @param buttonListenerPlayPause ActionListener for the "Play/Pause" button.
+     * @param buttonListenerStop      ActionListener for the "Stop" button.
+     * @param buttonListenerNext      ActionListener for the "Next" button.
+     * @param buttonListenerRepeat    ActionListener for the "Repeat" button.
+     * @param scrubberListenerClick   MouseListener for the Scrubber.
+     * @param scrubberListenerMotion  MouseMotionListener for the Scrubber.
      */
     public PlayerWindow(
             String windowTitle,
@@ -73,8 +80,9 @@ public class PlayerWindow {
             ActionListener buttonListenerPlayPause,
             ActionListener buttonListenerStop,
             ActionListener buttonListenerNext,
-            ActionListener buttonListenerLoop,
-            MouseInputAdapter scrubberMouseInputAdapter) {
+            ActionListener buttonListenerRepeat,
+            MouseListener scrubberListenerClick,
+            MouseMotionListener scrubberListenerMotion) {
 
         // Setting theme and typeface.
         try {
@@ -134,7 +142,7 @@ public class PlayerWindow {
 
         queuePanel.setLayout(new BorderLayout());
         queueListPane.setViewportView(queueList);
-        setQueueList(queueArray);
+        updateQueueList(queueArray);
         queuePanelButtons.setLayout(new BoxLayout(queuePanelButtons, BoxLayout.X_AXIS));
         queuePanelButtons.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
         playNowButton = new JButton("Play Now");
@@ -155,7 +163,7 @@ public class PlayerWindow {
         addSongButton.addActionListener(buttonListenerAddSong);
         //</editor-fold>
 
-        //<editor-fold desc="Mini-player Panel">
+        //<editor-fold desc="Miniplayer Panel">
         miniPlayerPanel = new JPanel();
         JPanel miniPlayerInfoAndScrubber = new JPanel();
         JPanel miniPlayerScrubberPanel = new JPanel();
@@ -165,12 +173,12 @@ public class PlayerWindow {
         miniPlayerCurrentTime = new JLabel("- - : - -");
         miniPlayerScrubber = new JSlider();
         miniPlayerTotalTime = new JLabel("- - : - -");
-        miniPlayerShuffleButton = new JToggleButton(Icons24.shuffle);
-        miniPlayerPreviousButton = new JButton(Icons24.previous);
-        miniPlayerPlayPauseButton = new JButton(Icons24.play);
-        miniPlayerStopButton = new JButton(Icons24.stop);
-        miniPlayerNextButton = new JButton(Icons24.next);
-        miniPlayerLoopButton = new JToggleButton(Icons24.loop);
+        miniPlayerShuffleButton = new JToggleButton(iconShuffle);
+        miniPlayerPreviousButton = new JButton(iconPrevious);
+        miniPlayerPlayPauseButton = new JButton(iconPlay);
+        miniPlayerStopButton = new JButton(iconStop);
+        miniPlayerNextButton = new JButton(iconNext);
+        miniPlayerRepeatButton = new JToggleButton(iconRepeat);
 
         miniPlayerPanel.setLayout(new BoxLayout(miniPlayerPanel, BoxLayout.PAGE_AXIS));
         miniPlayerPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
@@ -202,13 +210,13 @@ public class PlayerWindow {
         miniPlayerPlayPauseButton.setPreferredSize(new Dimension(35, 35));
         miniPlayerStopButton.setPreferredSize(new Dimension(35, 35));
         miniPlayerNextButton.setPreferredSize(new Dimension(35, 35));
-        miniPlayerLoopButton.setPreferredSize(new Dimension(35, 35));
+        miniPlayerRepeatButton.setPreferredSize(new Dimension(35, 35));
         miniPlayerShuffleButton.setMaximumSize(new Dimension(35, 35));
         miniPlayerPreviousButton.setMaximumSize(new Dimension(35, 35));
         miniPlayerPlayPauseButton.setMaximumSize(new Dimension(35, 35));
         miniPlayerStopButton.setMaximumSize(new Dimension(35, 35));
         miniPlayerNextButton.setMaximumSize(new Dimension(35, 35));
-        miniPlayerLoopButton.setMaximumSize(new Dimension(35, 35));
+        miniPlayerRepeatButton.setMaximumSize(new Dimension(35, 35));
 
         miniPlayerButtons.add(Box.createHorizontalGlue());
         miniPlayerButtons.add(miniPlayerShuffleButton);
@@ -221,16 +229,14 @@ public class PlayerWindow {
         miniPlayerButtons.add(Box.createRigidArea(new Dimension(5, 0)));
         miniPlayerButtons.add(miniPlayerNextButton);
         miniPlayerButtons.add(Box.createRigidArea(new Dimension(5, 0)));
-        miniPlayerButtons.add(miniPlayerLoopButton);
+        miniPlayerButtons.add(miniPlayerRepeatButton);
         miniPlayerButtons.add(Box.createRigidArea(new Dimension(5, 0)));
         miniPlayerButtons.add(Box.createHorizontalGlue());
 
-        miniPlayerShuffleButton.setEnabled(false);
         miniPlayerPreviousButton.setEnabled(false);
         miniPlayerPlayPauseButton.setEnabled(false);
         miniPlayerStopButton.setEnabled(false);
         miniPlayerNextButton.setEnabled(false);
-        miniPlayerLoopButton.setEnabled(false);
 
         miniPlayerPanel.add(miniPlayerInfoAndScrubber);
         miniPlayerPanel.add(miniPlayerButtons);
@@ -240,9 +246,9 @@ public class PlayerWindow {
         miniPlayerPlayPauseButton.addActionListener(buttonListenerPlayPause);
         miniPlayerStopButton.addActionListener(buttonListenerStop);
         miniPlayerNextButton.addActionListener(buttonListenerNext);
-        miniPlayerLoopButton.addActionListener(buttonListenerLoop);
-        miniPlayerScrubber.addMouseMotionListener(scrubberMouseInputAdapter);
-        miniPlayerScrubber.addMouseListener(scrubberMouseInputAdapter);
+        miniPlayerRepeatButton.addActionListener(buttonListenerRepeat);
+        miniPlayerScrubber.addMouseMotionListener(scrubberListenerMotion);
+        miniPlayerScrubber.addMouseListener(scrubberListenerClick);
         //</editor-fold>
 
         window.setLayout(new BorderLayout());
@@ -263,11 +269,11 @@ public class PlayerWindow {
     }
 
     /**
-     * Sets the information to be displayed in the queue list. Should be called whenever a song is added or removed.
+     * Refreshes the queue list. Should be called whenever a song is added or removed.
      *
      * @param queueArray String[][] with the queue. The array should contain in each position one Song converted to array.
      */
-    public void setQueueList(String[][] queueArray) {
+    public void updateQueueList(String[][] queueArray) {
         queueList.setShowHorizontalLines(true);
         queueList.setDragEnabled(false);
         queueList.setColumnSelectionAllowed(false);
@@ -307,14 +313,14 @@ public class PlayerWindow {
     }
 
     /**
-     * Sets the information displayed on the mini-player about the current song. Should be called whenever the
+     * Updates the information displayed on the miniplayer about the current song. Should be called whenever the
      * currently playing song changes.
      *
      * @param songTitle  Song title.
      * @param songAlbum  Song album.
      * @param songArtist Song artist.
      */
-    public void setPlayingSongInfo(String songTitle, String songAlbum, String songArtist) {
+    public void updatePlayingSongInfo(String songTitle, String songAlbum, String songArtist) {
         miniPlayerSongInfo.setText(songTitle + "     |     " + songAlbum + "     |     " + songArtist);
         miniPlayerSongInfo.repaint();
     }
@@ -322,84 +328,95 @@ public class PlayerWindow {
     /**
      * Sets the icon of the play/pause button.
      *
-     * @param state BUTTON_ICON_PLAY (0) to display the play icon (paused)
-     *              and BUTTON_ICON_PAUSE (1) to display the pause icon (playing).
+     * @param paused True to display the pause icon (playing) and false to display the play icon (paused).
      */
-    public void setPlayPauseButtonIcon(int state) {
-        switch (state) {
-            case 0 -> miniPlayerPlayPauseButton.setIcon(Icons24.play);
-            case 1 -> miniPlayerPlayPauseButton.setIcon(Icons24.pause);
+    public void updatePlayPauseButtonIcon(boolean paused) {
+        if (paused) {
+            miniPlayerPlayPauseButton.setIcon(iconPlay);
+        } else {
+            miniPlayerPlayPauseButton.setIcon(iconPause);
         }
+    }
+
+    /**
+     * Enables or disables everything in the miniplayer.
+     */
+    public void setEnabledScrubberArea(Boolean b) {
+        miniPlayerPreviousButton.setEnabled(b);
+        miniPlayerPlayPauseButton.setEnabled(b);
+        miniPlayerStopButton.setEnabled(b);
+        miniPlayerNextButton.setEnabled(b);
+        miniPlayerScrubber.setEnabled(b);
     }
 
     /**
      * Enables or disables the Shuffle button.
      *
-     * @param enable True to enable and false to disable.
+     * @param b True to enable and false to disable.
      */
-    public void setEnabledShuffleButton(Boolean enable) {
-        miniPlayerShuffleButton.setEnabled(enable);
+    public void setEnabledShuffleButton(Boolean b) {
+        miniPlayerShuffleButton.setEnabled(b);
     }
 
     /**
      * Enables or disables the Previous button.
      *
-     * @param enable True to enable and false to disable.
+     * @param b True to enable and false to disable.
      */
-    public void setEnabledPreviousButton(Boolean enable) {
-        miniPlayerPreviousButton.setEnabled(enable);
+    public void setEnabledPreviousButton(Boolean b) {
+        miniPlayerPreviousButton.setEnabled(b);
     }
 
     /**
      * Enables or disables the Play/Pause button.
      *
-     * @param enable True to enable and false to disable.
+     * @param b True to enable and false to disable.
      */
-    public void setEnabledPlayPauseButton(Boolean enable) {
-        miniPlayerPlayPauseButton.setEnabled(enable);
+    public void setEnabledPlayPauseButton(Boolean b) {
+        miniPlayerPlayPauseButton.setEnabled(b);
     }
 
     /**
      * Enables or disables the Stop button.
      *
-     * @param enable True to enable and false to disable.
+     * @param b True to enable and false to disable.
      */
-    public void setEnabledStopButton(Boolean enable) {
-        miniPlayerStopButton.setEnabled(enable);
+    public void setEnabledStopButton(Boolean b) {
+        miniPlayerStopButton.setEnabled(b);
     }
 
     /**
      * Enables or disables the Next button.
      *
-     * @param enable True to enable and false to disable.
+     * @param b True to enable and false to disable.
      */
-    public void setEnabledNextButton(Boolean enable) {
-        miniPlayerNextButton.setEnabled(enable);
+    public void setEnabledNextButton(Boolean b) {
+        miniPlayerNextButton.setEnabled(b);
     }
 
     /**
-     * Enables or disables the Loop button.
+     * Enables or disables the Repeat button.
      *
-     * @param enable True to enable and false to disable.
+     * @param b True to enable and false to disable.
      */
-    public void setEnabledLoopButton(Boolean enable) {
-        miniPlayerLoopButton.setEnabled(enable);
+    public void setEnabledRepeatButton(Boolean b) {
+        miniPlayerRepeatButton.setEnabled(b);
     }
 
     /**
      * Enables or disables the Scrubber.
      *
-     * @param enable True to enable and false to disable.
+     * @param b True to enable and false to disable.
      */
-    public void setEnabledScrubber(Boolean enable) {
-        miniPlayerScrubber.setEnabled(enable);
+    public void setEnabledScrubber(Boolean b) {
+        miniPlayerScrubber.setEnabled(b);
     }
 
     /**
-     * Updates the labels and scrubber values in the mini-player.
+     * Updates the labels and scrubber values in the miniplayer.
      *
-     * @param currentTime Current time of the current song in milliseconds.
-     * @param totalTime   Total time of the current song in milliseconds.
+     * @param currentTime Current time of the current song.
+     * @param totalTime   Total time of the current song.
      */
     public void setTime(int currentTime, int totalTime) {
         miniPlayerCurrentTime.setText(SecondsToString.currentTimeToString(currentTime / 1000, totalTime / 1000));
@@ -409,20 +426,22 @@ public class PlayerWindow {
     }
 
     /**
-     * Resets mini-player to default values and disables buttons. Should be called whenever the 'stop' button is pressed.
+     * Resets miniplayer to default values and disables buttons. Should be called whenever the 'stop' button is pressed.
      */
     public void resetMiniPlayer() {
         miniPlayerCurrentTime.setText("- - : - -");
         miniPlayerTotalTime.setText("- - : - -");
         miniPlayerSongInfo.setText("");
         miniPlayerScrubber.setMaximum(0);
-        setPlayPauseButtonIcon(BUTTON_ICON_PLAY);
-        setEnabledPreviousButton(false);
-        setEnabledNextButton(false);
-        setEnabledPlayPauseButton(false);
-        setEnabledStopButton(false);
+        updatePlayPauseButtonIcon(false);
+        setEnabledScrubberArea(false);
         setEnabledScrubber(false);
     }
+
+    /**
+     * @return the Index of the selected song in the queue.
+     */
+    public int getSelectedIdx() { return queueList.getSelectedRow(); }
 
     /**
      * @return the ID of the selected song in the queue. Should be called whenever the 'Play Now' and 'Remove'
@@ -437,6 +456,7 @@ public class PlayerWindow {
      *
      * @return the current value of the scrubber.
      */
+
     public int getScrubberValue() {
         return miniPlayerScrubber.getValue();
     }
@@ -445,12 +465,10 @@ public class PlayerWindow {
      * Opens a file chooser and returns a Song object with information parsed from the file.
      * If information can't be parsed from the file a dialog is open to input song info.
      *
-     * @return chosen MP3 or Null if cancelled.
+     * @return Chosen MP3 or Null if cancelled.
      */
-    public Song openFileChooser() throws IOException, BitstreamException, UnsupportedTagException, InvalidDataException {
+    public Song getNewSong() throws IOException, BitstreamException, UnsupportedTagException, InvalidDataException {
         CustomFileChooser fileChooser = new CustomFileChooser();
-        fileChooser.setCurrentDirectory(new File
-                (System.getProperty("user.home") + System.getProperty("file.separator") + "Downloads"));
         int fileChooserReturnValue = fileChooser.showOpenDialog(this.window);
 
         if (fileChooserReturnValue == JFileChooser.APPROVE_OPTION) {
@@ -495,12 +513,15 @@ public class PlayerWindow {
                 JLabel messageLabel = new JLabel(message);
                 JLabel songTitleLabel = new JLabel("Title:");
                 JLabel songAlbumLabel = new JLabel("Album:");
-                JLabel songArtistLabel = new JLabel("Artist:");
+                JLabel songArtistLabel = new JLabel("Artist");
                 JLabel songYearLabel = new JLabel("Year:");
 
                 JTextField songTitleField = new JTextField();
+//                songTitleField.setDocument(new LengthRestrictedDocument(20));
                 JTextField songAlbumField = new JTextField();
+//                songAlbumField.setDocument(new LengthRestrictedDocument(20));
                 JTextField songArtistField = new JTextField();
+//                songArtistField.setDocument(new LengthRestrictedDocument(20));
                 JTextField songYearField = new JTextField();
                 PlainDocument yearDocument = (PlainDocument) songYearField.getDocument();
                 yearDocument.setDocumentFilter(new intDocumentFilter());
@@ -578,10 +599,32 @@ public class PlayerWindow {
             if (artist == null || artist.isBlank()) artist = "Unknown";
             if (year == null || year.isBlank()) year = "Unknown";
 
-            String uuid = UUID.randomUUID().toString();
-            return new Song(uuid, title, album, artist, year, strLength, msLength, filePath, fileSize, numFrames, msPerFrame);
+            return new Song(title, album, artist, year, strLength, msLength, filePath, fileSize, numFrames, msPerFrame);
         } else {
             return null;
+        }
+    }
+}
+
+/**
+ * Document with a limited number of characters.
+ */
+final class LengthRestrictedDocument extends PlainDocument {
+
+    private final int limit;
+
+    public LengthRestrictedDocument(int limit) {
+        this.limit = limit;
+    }
+
+    @Override
+    public void insertString(int offs, String str, AttributeSet a)
+            throws BadLocationException {
+        if (str == null)
+            return;
+
+        if ((getLength() + str.length()) <= limit) {
+            super.insertString(offs, str, a);
         }
     }
 }

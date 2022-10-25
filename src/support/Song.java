@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class Song {
-    private final String uuid;
     private final String title;
     private final String album;
     private final String artist;
@@ -24,7 +23,6 @@ public class Song {
      * @param song Song object to copy.
      */
     public Song(Song song) {
-        this.uuid = song.getUuid();
         this.title = song.getTitle();
         this.album = song.getAlbum();
         this.artist = song.getArtist();
@@ -49,8 +47,7 @@ public class Song {
      * @param numFrames  Number of MP3 frames.
      * @param msPerFrame Number of milliseconds per MP3 frame.
      */
-    public Song(String uuid, String title, String album, String artist, String year, String strLength, float msLength, String filePath, int fileSize, int numFrames, float msPerFrame) {
-        this.uuid = uuid;
+    public Song(String title, String album, String artist, String year, String strLength, float msLength, String filePath, int fileSize, int numFrames, float msPerFrame) {
         this.title = title;
         this.album = album;
         this.artist = artist;
@@ -76,12 +73,8 @@ public class Song {
         copy[2] = this.getArtist();
         copy[3] = this.getYear();
         copy[4] = this.getStrLength();
-        copy[5] = this.getUuid();
+        copy[5] = this.getFilePath();
         return copy;
-    }
-
-    public String getUuid() {
-        return uuid;
     }
 
     public String getTitle() {
@@ -122,10 +115,6 @@ public class Song {
 
     public float getMsPerFrame() {
         return msPerFrame;
-    }
-
-    // fazer método que retorna um Song
-    public void getSong(){
     }
 
     public BufferedInputStream getBufferedInputStream() throws FileNotFoundException {
