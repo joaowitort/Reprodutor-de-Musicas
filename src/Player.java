@@ -631,9 +631,4 @@ public class Player {
 
 
     }
-    //</editor-fold>
-
-    //<editor-fold desc="Getters and Setters">
-
-    //</editor-fold>
 }
